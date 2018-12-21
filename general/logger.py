@@ -36,3 +36,7 @@ def logger(name,
     log.addHandler(handler)
 
     return log
+
+
+if __name__ == '__main__':
+    print("Import me, don't run me!")
