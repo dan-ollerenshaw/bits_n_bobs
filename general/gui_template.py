@@ -1,7 +1,10 @@
-# Make a simple GUI that transforms some data.
+# Make a simple GUI.
 
-#TODO: find a program to successfully convert this to exe
-#(no luck with pyinstaller)
+# Read a csv specified by the user, then save the "head"
+# of the csv in the D:/ drive
+
+# Successfully converted this to .exe on linux and windows using pyinstaller :)
+
 
 from tkinter import Button, Tk
 from tkinter.filedialog import askopenfilename, asksaveasfilename
@@ -12,13 +15,13 @@ import pandas as pd
 class MyGui():
     """
     """
-    def __init__(self, master): # what is master?
-        self.master = master
-        master.title('test') # not doing anything
-                
+    def __init__(self, master):
+        self.master = master # aka root
+        master.title("Welcome to Dan's program!")
+        master.geometry('350x200')
+
         # initialise data to export:
         self.data = pd.DataFrame(None)
-        print(self.data)
         
         self.loader = Button(master,
                              text='Load a dataset',
@@ -57,6 +60,7 @@ class MyGui():
         outpath = asksaveasfilename(defaultextension='.csv')
         self.data.to_csv(outpath)
         print('Saved data!')
+
 
 def main():
     root = Tk()
