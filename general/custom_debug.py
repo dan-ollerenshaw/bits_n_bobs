@@ -39,3 +39,6 @@ def my_func():
 
 # unfortunately it seems that this doesn't work if input() built-in is not 
 # supported
+
+# N.B. {**globals(), **locals()} only works for python 3.5+
+# alternative syntax for earlier versions: dict(globals(), **locals())
