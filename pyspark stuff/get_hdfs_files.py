@@ -1,43 +1,48 @@
 """
-Extract filenames from HDFS.
+Write an equivalent of os.listdir() for a HDFS setting.
+
+N.B.: the API for subprocess changes a lot, this is for python3.6
+It's a little simpler for python3.7 with the capture_output option.
 """
 
 import subprocess
 
 
-def get_hdfs_files(directory,
-                   recursive=False,
-                   strings_to_search_for=[''],
-                   decoder='utf-8'):
-    """ Use a terminal command in python to get equivalent
-        of os.listdir() from HDFS.
+def get_hdfs_files(directory: str,
+                   recursive: bool = False,
+                   decoder='utf-8') -> list:
+    """ Use a terminal command to get equivalent of os.listdir()
+        from HDFS.
 
-        Recursive kwarg will ad -R and search all subdirectories.
-
-        If strings_to_search_for is specified, it will return
-        only files that contain all those strings.
-        (e.g. [".csv"])
-
-        #XXX could add kwarg for any instead of all...
+        Recursive kwarg will also search all subdirectories.
     """
+    # define the command
+    command = ['hdfs',
+               'dfs',
+               '-ls',
+               '-C' # XXX can't find documentation on this option
+               ]
 
-    command = f"hdfs dfs -ls -C -R {directory}" if recursive\
-              else f"hdfs dfs -ls -C {directory}"
+    if recursive:
+        command.append('-R')
 
-    p = subprocess.Popen(command,
-                         shell=True,
-                         stdout=subprocess.PIPE,
-                         stderr=subprocess.STDOUT)
+    command.append(directory)
 
-    files = [path.decode(decoder).rstrip('\n') for path in p.stdout.readlines()]
-    matching_files = [f for f in files\
-                      if all(
-                        [s.lower() in f.lower() for s in strings_to_search_for]
-                        )
-                      ]
+    # run the command
+    output = subprocess.run(command,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
 
-    return matching_files
+    # raise an err if we get any errors (e.g. invalid directory)
+    if output.returncode != 0:
+        raise Exception(f'{output.stderr.decode(decoder)}')
+
+    files = output.stdout.decode(decoder).split('\n')
+
+    return files
+
 
 
 if __name__ == '__main__':
     print("Import me, don't run me!")
+
