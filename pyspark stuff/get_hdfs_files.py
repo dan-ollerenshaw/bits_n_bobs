@@ -10,6 +10,7 @@ import subprocess
 
 def get_hdfs_files(directory: str,
                    recursive: bool = False,
+                   show_errs: bool = False,
                    decoder='utf-8') -> list:
     """ Use a terminal command to get equivalent of os.listdir()
         from HDFS.
@@ -33,14 +34,16 @@ def get_hdfs_files(directory: str,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
 
-    # raise an err if we get any errors (e.g. invalid directory)
-    if output.returncode != 0:
-        raise Exception(f'{output.stderr.decode(decoder)}')
+    # optionally print the errors
+    # e.g. if a recursive search got a permission error somewhere
+    if show_errs:
+        errs = output.stderr.decode(decoder).split('\n')
+        print(f"Error messages: {errs}")
 
-    files = output.stdout.decode(decoder).split('\n')
-
-    return files
-
+    # spit out the stdout or None
+    if output.stdout:
+        return output.stdout.decode(decoder).split('\n')
+    return None
 
 
 if __name__ == '__main__':
