@@ -1,0 +1,2 @@
+#!/bin/sh
+echo '[install]'$'\n''user = true'$'\n''index-url = http://art-p-01.ons.statistics.gov.uk/artifactory/api/pypi/yr-python/simple'$'\n''trusted-host = art-p-01.ons.statistics.gov.uk' > '/home/cdsw/.pip/pip.conf'
