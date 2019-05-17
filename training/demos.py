@@ -75,10 +75,11 @@ try:
 except FileExistsError:
     pass
 
-plt.plot(totals['value'])
+plt.plot(totals['value'].values)
 plt.xlabel('month')
 plt.ylabel('total')
 plt.title('example line chart!', fontsize=16);
+plt.xticks(range(totals.shape[0]), totals.index) # add labels
 plt.savefig('D:/demo/line.png')
 plt.close()
 
